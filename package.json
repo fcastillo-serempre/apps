@@ -5,8 +5,8 @@
   "scripts": {
     "nx": "nx",
     "start": "node dist/apps/api/main.js",
-    "build": "npx nx run-many --target=build --projects=wiki,api --parallel=true",
-    "serve": "npx nx run-many --target=serve --projects=wiki,api --parallel=true",
+    "build": "yarn nx run-many --target=build --projects=wiki,api --parallel=true",
+    "serve": "yarn nx run-many --target=serve --projects=wiki,api --parallel=true",
     "test": "nx test"
   },
   "private": true,
