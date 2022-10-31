@@ -1,10 +1,8 @@
 import { Schema, model } from 'mongoose';
 
-const userSchema = new Schema<{
-  name: string;
-  email: string;
-  password: string;
-}>({
+import type { User as UserType } from '@apps/api-interfaces';
+
+const userSchema = new Schema<UserType>({
   name: {
     type: String,
     required: [true, 'Name is required'],
@@ -20,4 +18,4 @@ const userSchema = new Schema<{
   },
 });
 
-export const User = model('User', userSchema);
+export const User = model<UserType>('User', userSchema);

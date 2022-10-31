@@ -1,3 +1,30 @@
-export interface Message {
-  message: string;
+import { Types } from 'mongoose';
+
+export interface Token {
+  uid: string;
+  name: string;
+}
+
+//
+// User model
+//
+export interface User {
+  name: string;
+  email: string;
+  password: string;
+}
+
+//
+// Space model
+//
+export type SpaceId = string;
+
+export interface Space {
+  id: SpaceId;
+  title: string;
+  emoji: string;
+  createdAt: Date;
+  updatedAt: Date;
+  published: boolean;
+  user: Types.ObjectId;
 }

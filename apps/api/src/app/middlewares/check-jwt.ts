@@ -1,8 +1,9 @@
 import { Response, Request, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
+import type { Token } from '@apps/api-interfaces';
+
 import { config } from '../config';
-import { type Token } from '../helpers';
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   // Read token

@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as cors from 'cors';
 
 import auth from './app/routes/auth.routes';
+import space from './app/routes/space.routes';
 
 import { config, dbConnection } from './app';
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.options('*', cors());
 
 app.use(`${API_ROOT}/auth`, auth);
+app.use(`${API_ROOT}/spaces`, space);
 
 app.get('*', (_, response: express.Response) => {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));

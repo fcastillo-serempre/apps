@@ -1,11 +1,8 @@
 import * as jwt from 'jsonwebtoken';
 
-import { config } from '../config';
+import type { Token } from '@apps/api-interfaces';
 
-export interface Token {
-  uid: string;
-  name: string;
-}
+import { config } from '../config';
 
 export const generateToken = ({
   uid,
