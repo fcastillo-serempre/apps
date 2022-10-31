@@ -1,7 +1,8 @@
 import { Response, Request, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
-import { Token } from '../helpers';
+import { config } from '../config';
+import { type Token } from '../helpers';
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   // Read token
@@ -15,7 +16,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const jwtPayload = <Token>jwt.verify(token, process.env.JWT_SECRET);
+    const jwtPayload = <Token>jwt.verify(token, config.jwtSecret);
 
     // (req as CustomRequest).token = jwtPayload;
     res.locals.jwtPayload = jwtPayload;

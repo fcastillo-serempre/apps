@@ -1,5 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 
+import { config } from '../config';
+
 export interface Token {
   uid: string;
   name: string;
@@ -14,7 +16,7 @@ export const generateToken = ({
 
     jwt.sign(
       payload,
-      process.env.JWT_SECRET,
+      config.jwtSecret,
       {
         expiresIn: '2h',
       },
