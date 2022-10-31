@@ -5,7 +5,7 @@ export const App = () => {
   const [m, setMessage] = useState<Message>({ message: '' });
 
   useEffect(() => {
-    fetch('/api/v1')
+    fetch('/api/v1/auth')
       .then((r) => r.json())
       .then(setMessage);
   }, []);
