@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "nx": "nx",
     "start": "node dist/apps/api/main.js",
     "build": "yarn nx run-many --target=build --projects=wiki,api --parallel=true",
     "serve": "yarn nx run-many --target=serve --projects=wiki,api --parallel=true",
-    "test": "nx test"
+    "test": "nx test",
+    "nx": "nx"
   },
   "private": true,
   "dependencies": {
