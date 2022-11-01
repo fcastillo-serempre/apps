@@ -8,10 +8,13 @@ export interface Token {
 //
 // User model
 //
-export interface User {
-  name: string;
+
+export interface BaseUser {
   email: string;
   password: string;
+}
+export interface User extends BaseUser {
+  name: string;
 }
 
 //

@@ -1,21 +1,28 @@
 import { Response, Request } from 'express';
 
-import { getUid } from '../helpers';
+import { getErrorMessage, getUid } from '../helpers';
 import { Space } from '../models';
 
-export const getSpaces = async (_, res: Response): Promise<Response> => {
+export const getSpaces = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const uid = getUid(res);
+
+  const limit = <number>Number(req.query.limit) || 10;
+  const page = <number>Number(req.query.page) || 0;
 
   try {
     const spaces = await Space.find({
       user: uid,
-    }).populate('user', 'email');
+    })
+      .limit(limit)
+      .skip(limit * page)
+      .populate('user', 'email');
 
-    return res.send({ ok: true, spaces });
+    return res.send({ spaces });
   } catch (error) {
-    return res
-      .status(500)
-      .send({ ok: false, message: new Error(error).message });
+    return res.status(500).send(getErrorMessage(error));
   }
 };
 
@@ -33,13 +40,9 @@ export const createSpace = async (
     space.published = false;
 
     const savedSpace = await space.save();
-    return res.send({ ok: true, space: savedSpace });
+    return res.send({ space: savedSpace });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      ok: false,
-      message: new Error(error).message,
-    });
+    return res.status(500).send(getErrorMessage(error));
   }
 };
 
@@ -56,16 +59,14 @@ export const updateSpace = async (
     // Check if space exists
     if (!space) {
       return res.status(404).json({
-        ok: false,
-        msg: 'Space not found with id ' + spaceId,
+        message: 'Space not found with id ' + spaceId,
       });
     }
 
     // Check if the user is the owner of the space
     if (!space.user.equals(uid)) {
       return res.status(401).json({
-        ok: false,
-        msg: 'You do not have permission to edit this space',
+        message: 'You do not have permission to edit this space',
       });
     }
 
@@ -79,13 +80,9 @@ export const updateSpace = async (
       new: true,
     });
 
-    return res.send({ ok: true, space: updatedSpace });
+    return res.send({ space: updatedSpace });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      ok: false,
-      msg: 'Please contact the administrator',
-    });
+    return res.status(500).send(getErrorMessage(error));
   }
 };
 
@@ -102,16 +99,14 @@ export const deleteSpace = async (
     // Check if space exists
     if (!space) {
       return res.status(404).json({
-        ok: false,
-        msg: 'Space not found with id ' + spaceId,
+        message: 'Space not found with id ' + spaceId,
       });
     }
 
     // Check if the user is the owner of the space
     if (!space.user.equals(uid)) {
       return res.status(401).json({
-        ok: false,
-        msg: 'You do not have permission to delete this space',
+        message: 'You do not have permission to delete this space',
       });
     }
 
@@ -120,10 +115,6 @@ export const deleteSpace = async (
 
     return res.send({ ok: true, space });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      ok: false,
-      msg: 'Please contact the administrator',
-    });
+    return res.status(500).send(getErrorMessage(error));
   }
 };

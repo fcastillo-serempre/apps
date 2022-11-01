@@ -1,35 +1,29 @@
 import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
+import helmet from 'helmet';
 
 import { getEnvVariables } from '@apps/helpers';
 
-import auth from './app/routes/auth.routes';
-import space from './app/routes/space.routes';
-
+import routes from './app/routes';
 import { dbConnection } from './app';
 
 const { port, baseURL } = getEnvVariables();
 
 const CLIENT_BUILD_PATH = path.join(__dirname, '../wiki');
 
-// Database
-dbConnection();
+dbConnection(); // Database
 
-// Express server
-const app: express.Application = express();
+const app: express.Express = express(); // Create a new express application instance
 
-// Public directory
 app.use(express.static(CLIENT_BUILD_PATH));
 
-// Read and parse body
-app.use(express.json());
+// Call midlewares
+app.use(cors()); // Cors options
+app.use(helmet()); // Security
+app.use(express.json()); // Read and parse body
 
-// API routes
-app.options('*', cors());
-
-app.use(`${baseURL}/auth`, auth);
-app.use(`${baseURL}/spaces`, space);
+app.use('/', routes); // Protected API endpoints
 
 app.get('*', (_, response: express.Response) => {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));

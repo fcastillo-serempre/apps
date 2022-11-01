@@ -12,7 +12,6 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
 
   if (!token) {
     return res.status(401).json({
-      ok: false,
       message: 'There is no token in the request',
     });
   }
@@ -24,7 +23,6 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error(error);
     res.status(401).json({
-      ok: false,
       message: 'Token is not valid',
     });
     return;
