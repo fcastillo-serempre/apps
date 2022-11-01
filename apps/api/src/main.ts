@@ -2,13 +2,16 @@ import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
 
+import { getEnvVariables } from '@apps/helpers';
+
 import auth from './app/routes/auth.routes';
 import space from './app/routes/space.routes';
 
-import { config, dbConnection } from './app';
+import { dbConnection } from './app';
+
+const { port, baseURL } = getEnvVariables();
 
 const CLIENT_BUILD_PATH = path.join(__dirname, '../wiki');
-const API_ROOT = '/api/v1';
 
 // Database
 dbConnection();
@@ -25,15 +28,14 @@ app.use(express.json());
 // API routes
 app.options('*', cors());
 
-app.use(`${API_ROOT}/auth`, auth);
-app.use(`${API_ROOT}/spaces`, space);
+app.use(`${baseURL}/auth`, auth);
+app.use(`${baseURL}/spaces`, space);
 
 app.get('*', (_, response: express.Response) => {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
 });
 
-const port = config.port || 3333;
 const server = app.listen(port, () => {
-  console.log('Listening at http://localhost:' + port + API_ROOT);
+  console.log('Listening at http://localhost:' + port + baseURL);
 });
 server.on('error', console.error);

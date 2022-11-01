@@ -2,7 +2,9 @@ import * as jwt from 'jsonwebtoken';
 
 import type { Token } from '@apps/api-interfaces';
 
-import { config } from '../config';
+import { getEnvVariables } from '@apps/helpers';
+
+const { jwtSecret } = getEnvVariables();
 
 export const generateToken = ({
   uid,
@@ -13,7 +15,7 @@ export const generateToken = ({
 
     jwt.sign(
       payload,
-      config.jwtSecret,
+      jwtSecret,
       {
         expiresIn: '2h',
       },

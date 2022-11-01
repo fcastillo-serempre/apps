@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import { config } from '../config';
+import { getEnvVariables } from '@apps/helpers';
 
-const dbUri = config.db.uri;
+const { dbUri } = getEnvVariables();
 
 export const dbConnection = async (): Promise<void> => {
   try {
