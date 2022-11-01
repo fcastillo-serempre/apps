@@ -37,7 +37,7 @@ export const routes: (status: AuthStatus) => RouteObject[] = (status) => {
               element: <Login />,
             },
             {
-              path: `${signup}`,
+              path: signup,
               element: (
                 <div>
                   <h1>Join</h1>
