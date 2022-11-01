@@ -1,31 +1,72 @@
-import { useEffect, useState } from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
-export const App = () => {
-  const [response, setResponse] = useState<{
-    ok: boolean;
-  }>({
-    ok: false,
-  });
+import { store, persistor, useAuthStore } from '@apps/store';
+import { Button, Typography } from '@apps/ui-library';
 
-  useEffect(() => {
-    fetch('/api/v1/auth')
-      .then((r) => r.json())
-      .then(setResponse);
-  }, []);
+import { AppNavigation } from '../router';
+
+export const Login = () => {
+  const { handleLogin, status, errorMessage } = useAuthStore();
 
   return (
     <>
-      <div style={{ textAlign: 'center' }}>
-        <h1>Welcome to wiki!</h1>
+      <Typography variant="h3">Welcome to wiki!</Typography>
+      <Button
+        onClick={() => {
+          handleLogin({
+            password: '123456',
+            email: 'fcastillo@serempre.com',
+          });
+        }}
+        disabled={status === 'checking'}
+      >
+        {status === 'checking' ? 'Checking...' : 'Login'}
+      </Button>
 
-        <img
-          width="450"
-          src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-          alt="Nx - Smart, Fast and Extensible Build System"
-        />
-      </div>
-      <div>{response.ok}</div>
+      <Typography className="text-teal-500 underline" variant="h5">
+        {status}
+      </Typography>
+
+      {errorMessage && <p>{errorMessage}</p>}
     </>
+  );
+};
+
+export const Logout = () => {
+  const { handleLogout, status, user, errorMessage } = useAuthStore();
+  return (
+    <>
+      <Typography variant="h3">Welcome {user?.name}!</Typography>
+      <Button
+        variant="outlined"
+        onClick={() => {
+          handleLogout();
+        }}
+        disabled={status === 'checking'}
+      >
+        {status === 'checking' ? 'Checking...' : 'Logout'}
+      </Button>
+
+      <Typography className="text-teal-500 underline" variant="h5">
+        {status}
+      </Typography>
+
+      {errorMessage && <p>{errorMessage}</p>}
+    </>
+  );
+};
+
+export const App = () => {
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <PersistGate loading={<span>Loading...</span>} persistor={persistor}>
+          <AppNavigation />
+        </PersistGate>
+      </BrowserRouter>
+    </Provider>
   );
 };
 

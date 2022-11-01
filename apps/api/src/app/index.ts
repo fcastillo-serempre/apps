@@ -1,4 +1,4 @@
-export * from './config';
+// export * from './config';
 export * from './controllers';
 export * from './database';
 export * from './helpers';

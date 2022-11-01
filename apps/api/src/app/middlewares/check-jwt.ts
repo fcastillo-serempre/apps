@@ -2,8 +2,9 @@ import { Response, Request, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 import type { Token } from '@apps/api-interfaces';
+import { getEnvVariables } from '@apps/helpers';
 
-import { config } from '../config';
+const { jwtSecret } = getEnvVariables();
 
 export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   // Read token
@@ -17,9 +18,8 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const jwtPayload = <Token>jwt.verify(token, config.jwtSecret);
+    const jwtPayload = <Token>jwt.verify(token, jwtSecret);
 
-    // (req as CustomRequest).token = jwtPayload;
     res.locals.jwtPayload = jwtPayload;
   } catch (error) {
     console.error(error);
