@@ -2,7 +2,7 @@ import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
 
 import { User } from '../models';
-import { generateToken } from '../helpers';
+import { generateToken, getErrorMessage } from '../helpers';
 
 export const createUser = async (
   req: Request,
@@ -16,7 +16,6 @@ export const createUser = async (
     // Check if user exists
     if (user) {
       return res.status(400).json({
-        ok: false,
         message: 'A user already exists with that email',
       });
     }
@@ -39,7 +38,6 @@ export const createUser = async (
     });
 
     return res.status(201).json({
-      ok: true,
       uid,
       name,
       token,
@@ -62,7 +60,6 @@ export const loginUser = async (
     // Check if user exists
     if (!user) {
       return res.status(400).json({
-        ok: false,
         message: 'User or password are incorrect',
       });
     }
@@ -71,7 +68,6 @@ export const loginUser = async (
     const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) {
       return res.status(400).json({
-        ok: false,
         message: 'Password is incorrect',
       });
     }
@@ -85,20 +81,13 @@ export const loginUser = async (
     });
 
     return res.status(200).json({
-      ok: true,
       token,
-      user: {
-        id: uid,
-        name,
-        email,
-      },
+      id: uid,
+      name,
+      email,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      ok: false,
-      message: new Error(error).message,
-    });
+    return res.status(500).send(getErrorMessage(error));
   }
 };
 
@@ -112,10 +101,5 @@ export const revalidateToken = async (_, res: Response): Promise<Response> => {
     name,
   });
 
-  const user = {
-    id: uid,
-    name,
-  };
-
-  return res.json({ ok: true, user, token });
+  return res.json({ id: uid, name, token });
 };

@@ -1,14 +1,15 @@
-import { Router, type Response } from 'express';
+/*
+    user routes / Auth
+    host + /api/v1/auth
+*/
+
+import { Router } from 'express';
 import { check } from 'express-validator';
 
 import { createUser, loginUser, revalidateToken } from '../controllers';
 import { checkJwt, fieldsValidator } from '../middlewares';
 
-const router = Router();
-
-router.get('/', (_, res: Response) => {
-  res.send({ ok: true });
-});
+const router = Router(); // Create a new router
 
 router.post(
   '/new',

@@ -22,10 +22,7 @@ export const login = createAsyncThunk<
       data: user,
     });
 
-    const {
-      user: { id, name, email },
-      token,
-    } = data;
+    const { id, name, email, token } = data;
 
     // Save token in localStorage
     handleToken().set(token);
@@ -66,13 +63,11 @@ export const checkToken = createAsyncThunk<
 
   try {
     const {
-      data: { token, user },
+      data: { token, id, name },
     } = await wikiApi.get('/auth/renew');
 
     // Save token in localStorage
     setToken(token);
-
-    const { id, name } = user;
 
     const userEntity: UserEntity = {
       id,
