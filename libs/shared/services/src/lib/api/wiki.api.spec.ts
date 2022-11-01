@@ -1,4 +1,4 @@
-import wikiApi from './wiki.api';
+import { wikiApi } from './wiki.api';
 
 describe('WikiApi', () => {
   it("Should has a default value for 'wikiApiUrl'", () => {

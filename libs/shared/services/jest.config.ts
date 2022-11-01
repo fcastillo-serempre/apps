@@ -12,9 +12,4 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../../coverage/libs/shared/services',
-  // testEnvironment: 'jest-environment-jsdom',
-
-  testEnvironmentOptions: {
-    url: 'http://localhost',
-  },
 };

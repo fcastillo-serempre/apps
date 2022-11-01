@@ -4,16 +4,6 @@
   "sourceRoot": "libs/shared/helpers/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/shared/helpers",
-        "main": "libs/shared/helpers/src/index.ts",
-        "tsConfig": "libs/shared/helpers/tsconfig.lib.json",
-        "assets": ["libs/shared/helpers/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

@@ -4,7 +4,7 @@ import { getEnvVariables } from '@apps/helpers';
 
 const { baseURL } = getEnvVariables();
 
-const wikiApi: AxiosInstance = axios.create({
+export const wikiApi: AxiosInstance = axios.create({
   baseURL,
 });
 
@@ -26,4 +26,4 @@ wikiApi.interceptors.request.use(
   }
 );
 
-export default wikiApi;
+// export default wikiApi;

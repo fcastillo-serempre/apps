@@ -1,1 +1,1 @@
-export { default as wikiApi } from './wiki.api';
+export { wikiApi } from './wiki.api';
