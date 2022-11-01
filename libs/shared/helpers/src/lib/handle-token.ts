@@ -1,9 +1,9 @@
 export type Token = string;
 
 interface HandleToken {
-  saveToken: (token: Token) => void;
-  getToken: () => string | null;
-  removeToken: () => void;
+  set: (token: Token) => void;
+  get: () => string | null;
+  remove: () => void;
 }
 
 export const handleToken = (): HandleToken => {
@@ -11,14 +11,14 @@ export const handleToken = (): HandleToken => {
   const tokenKeyExp = 'token-init-date';
 
   return {
-    saveToken: (token: Token) => {
+    set: (token: Token) => {
       if (token) {
         localStorage.setItem(tokenKey, token);
         localStorage.setItem(tokenKeyExp, new Date().getTime().toString());
       }
     },
-    getToken: () => localStorage.getItem(tokenKey),
-    removeToken: () => {
+    get: () => localStorage.getItem(tokenKey),
+    remove: () => {
       localStorage.removeItem(tokenKey);
       localStorage.removeItem(tokenKeyExp);
     },

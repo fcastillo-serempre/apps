@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 
-import { getEnvVariables } from '@apps/helpers';
+import { getEnvVariables, handleToken } from '@apps/helpers';
 
 const { baseURL } = getEnvVariables();
 
@@ -12,12 +12,7 @@ wikiApi.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     config.headers = config.headers ?? {};
 
-    // config.headers = {
-    //   ...config.headers,
-    //   'x-token': localStorage.getItem('token') || '',
-    // };
-
-    config.headers['x-token'] = localStorage.getItem('token');
+    config.headers['x-token'] = handleToken().get();
 
     return config;
   },
@@ -25,5 +20,3 @@ wikiApi.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-// export default wikiApi;

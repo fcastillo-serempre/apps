@@ -3,9 +3,9 @@ import { AxiosError } from 'axios';
 
 import type { UserEntity } from '@apps/models';
 import { wikiApi } from '@apps/services';
+import { handleToken } from '@apps/helpers';
 
 import { RootState } from '../root/root.reducer';
-import { handleToken } from '../helpers';
 
 export interface PayloadLogin extends Pick<UserEntity, 'email'> {
   password: string;
@@ -28,8 +28,7 @@ export const login = createAsyncThunk<
     } = data;
 
     // Save token in localStorage
-    const { saveToken } = handleToken();
-    saveToken(token);
+    handleToken().set(token);
 
     const userEntity: UserEntity = {
       id,
@@ -52,8 +51,7 @@ export const logout = createAsyncThunk<
   { state: RootState }
 >(`@auth/logout`, async (): Promise<void> => {
   // Remove token from localStorage
-  const { removeToken } = handleToken();
-  removeToken();
+  handleToken().remove();
 });
 
 export const checkToken = createAsyncThunk<
@@ -61,7 +59,7 @@ export const checkToken = createAsyncThunk<
   void,
   { state: RootState }
 >(`@auth/checkToken`, async (): Promise<UserEntity> => {
-  const { getToken, saveToken } = handleToken();
+  const { get: getToken, set: setToken } = handleToken();
   const token = getToken();
 
   if (!token) return Promise.reject('Token not found');
@@ -72,7 +70,7 @@ export const checkToken = createAsyncThunk<
     } = await wikiApi.get('/auth/renew');
 
     // Save token in localStorage
-    saveToken(token);
+    setToken(token);
 
     const { id, name } = user;
 
