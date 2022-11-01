@@ -1,68 +1,71 @@
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 import { store, persistor, useAuthStore } from '@apps/store';
-import { useEffect } from 'react';
 import { Button, Typography } from '@apps/ui-library';
 
-const Login = () => {
-  const {
-    handleLogin,
-    handleLogout,
-    status,
-    user,
-    errorMessage,
-    handleCheckToken,
-  } = useAuthStore();
+import { AppNavigation } from '../router';
 
-  useEffect(() => {
-    handleCheckToken();
-  }, []);
+export const Login = () => {
+  const { handleLogin, status, errorMessage } = useAuthStore();
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <>
       <Typography variant="h3">Welcome to wiki!</Typography>
-
-      {!user ? (
-        <Button
-          onClick={() => {
-            handleLogin({
-              password: '123456',
-              email: 'fcastillo@serempre.com',
-            });
-          }}
-          disabled={status === 'checking'}
-        >
-          {status === 'checking' ? 'Checking...' : 'Login'}
-        </Button>
-      ) : (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            handleLogout();
-          }}
-          disabled={status === 'checking'}
-        >
-          {status === 'checking' ? 'Checking...' : 'Logout'}
-        </Button>
-      )}
+      <Button
+        onClick={() => {
+          handleLogin({
+            password: '123456',
+            email: 'fcastillo@serempre.com',
+          });
+        }}
+        disabled={status === 'checking'}
+      >
+        {status === 'checking' ? 'Checking...' : 'Login'}
+      </Button>
 
       <Typography className="text-teal-500 underline" variant="h5">
         {status}
       </Typography>
-      {user && <p>{JSON.stringify(user, null, 2)}</p>}
 
       {errorMessage && <p>{errorMessage}</p>}
-    </div>
+    </>
+  );
+};
+
+export const Logout = () => {
+  const { handleLogout, status, user, errorMessage } = useAuthStore();
+  return (
+    <>
+      <Typography variant="h3">Welcome {user?.name}!</Typography>
+      <Button
+        variant="outlined"
+        onClick={() => {
+          handleLogout();
+        }}
+        disabled={status === 'checking'}
+      >
+        {status === 'checking' ? 'Checking...' : 'Logout'}
+      </Button>
+
+      <Typography className="text-teal-500 underline" variant="h5">
+        {status}
+      </Typography>
+
+      {errorMessage && <p>{errorMessage}</p>}
+    </>
   );
 };
 
 export const App = () => {
   return (
     <Provider store={store}>
-      <PersistGate loading={<span>Loading...</span>} persistor={persistor}>
-        <Login />
-      </PersistGate>
+      <BrowserRouter>
+        <PersistGate loading={<span>Loading...</span>} persistor={persistor}>
+          <AppNavigation />
+        </PersistGate>
+      </BrowserRouter>
     </Provider>
   );
 };

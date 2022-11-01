@@ -6,11 +6,12 @@ import {
   selectAuthUser,
   selectAuthErrorMessage,
 } from '../auth/auth.selectors';
+import { AuthStatus } from '../auth/auth.types';
 import { useAppDispatch } from './use-app-dispatch';
 import { useAppSelector } from './use-app-selector';
 
 interface UseAuthStore {
-  status: string;
+  status: AuthStatus;
   user: UserEntity | undefined;
   errorMessage: string | undefined;
 
