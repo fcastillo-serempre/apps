@@ -1,10 +1,10 @@
 interface EnvVariables {
-  baseURL?: string;
+  baseURL: string;
 }
 
 export const getEnvVariables = (): EnvVariables => {
   const envVariables: EnvVariables = {
-    baseURL: process.env['NX_API_URL'],
+    baseURL: process.env['NX_API_URL'] || '/api',
   };
   return envVariables;
 };
