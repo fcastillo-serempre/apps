@@ -86,10 +86,12 @@ export const loginUser = async (
 
     return res.status(200).json({
       ok: true,
-      uid,
-      name,
       token,
-      email,
+      user: {
+        id: uid,
+        name,
+        email,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -110,5 +112,10 @@ export const revalidateToken = async (_, res: Response): Promise<Response> => {
     name,
   });
 
-  return res.json({ ok: true, uid, name, token });
+  const user = {
+    id: uid,
+    name,
+  };
+
+  return res.json({ ok: true, user, token });
 };

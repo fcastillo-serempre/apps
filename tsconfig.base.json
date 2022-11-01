@@ -15,7 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@apps/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@apps/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@apps/helpers": ["libs/shared/helpers/src/index.ts"],
+      "@apps/services": ["libs/shared/services/src/index.ts"],
+      "@apps/models": ["libs/shared/models/src/index.ts"],
+      "@apps/store": ["libs/shared/store/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

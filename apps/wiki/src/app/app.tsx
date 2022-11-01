@@ -1,31 +1,64 @@
-import { useEffect, useState } from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
 
-export const App = () => {
-  const [response, setResponse] = useState<{
-    ok: boolean;
-  }>({
-    ok: false,
-  });
+import { store, persistor, useAuthStore } from '@apps/store';
+import { useEffect } from 'react';
+
+const Login = () => {
+  const {
+    handleLogin,
+    handleLogout,
+    status,
+    user,
+    errorMessage,
+    handleCheckToken,
+  } = useAuthStore();
 
   useEffect(() => {
-    fetch('/api/v1/auth')
-      .then((r) => r.json())
-      .then(setResponse);
+    handleCheckToken();
   }, []);
 
   return (
-    <>
-      <div style={{ textAlign: 'center' }}>
-        <h1>Welcome to wiki!</h1>
+    <div style={{ textAlign: 'center' }}>
+      <h1>Welcome to wiki!</h1>
 
-        <img
-          width="450"
-          src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-          alt="Nx - Smart, Fast and Extensible Build System"
-        />
-      </div>
-      <div>{response.ok}</div>
-    </>
+      <button
+        onClick={() => {
+          handleLogin({
+            password: '123456',
+            email: 'fcastillo@serempre.com',
+          });
+        }}
+      >
+        Login
+      </button>
+      <br />
+      <button
+        onClick={() => {
+          handleLogout();
+        }}
+      >
+        Logout
+      </button>
+      <br />
+
+      <h3>
+        <u>{status}</u>
+      </h3>
+      {user && <p>{JSON.stringify(user, null, 2)}</p>}
+
+      {errorMessage && <p>{errorMessage}</p>}
+    </div>
+  );
+};
+
+export const App = () => {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<span>Loading...</span>} persistor={persistor}>
+        <Login />
+      </PersistGate>
+    </Provider>
   );
 };
 
