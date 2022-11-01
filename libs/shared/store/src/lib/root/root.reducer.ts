@@ -8,11 +8,11 @@ import {
 import { authReducer, AUTH_FEATURE_KEY } from '../auth/auth.slice';
 
 // import { spacesReducer, SPACES_FEATURE_KEY } from '../spaces/spaces.slice';
-// import { THEME_FEATURE_KEY, themeReducer } from '../theme/theme.slice';
+import { THEME_FEATURE_KEY, themeReducer } from '../theme/theme.slice';
 
 const reducers = {
   [AUTH_FEATURE_KEY]: authReducer,
-  // [THEME_FEATURE_KEY]: themeReducer,
+  [THEME_FEATURE_KEY]: themeReducer,
   // [SPACES_FEATURE_KEY]: spacesReducer,
 };
 

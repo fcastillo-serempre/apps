@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 
 import { store, persistor, useAuthStore } from '@apps/store';
 import { useEffect } from 'react';
+import { Button, Typography } from '@apps/ui-library';
 
 const Login = () => {
   const {
@@ -20,31 +21,35 @@ const Login = () => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <h1>Welcome to wiki!</h1>
+      <Typography variant="h3">Welcome to wiki!</Typography>
 
-      <button
-        onClick={() => {
-          handleLogin({
-            password: '123456',
-            email: 'fcastillo@serempre.com',
-          });
-        }}
-      >
-        Login
-      </button>
-      <br />
-      <button
-        onClick={() => {
-          handleLogout();
-        }}
-      >
-        Logout
-      </button>
-      <br />
+      {!user ? (
+        <Button
+          onClick={() => {
+            handleLogin({
+              password: '123456',
+              email: 'fcastillo@serempre.com',
+            });
+          }}
+          disabled={status === 'checking'}
+        >
+          {status === 'checking' ? 'Checking...' : 'Login'}
+        </Button>
+      ) : (
+        <Button
+          variant="outlined"
+          onClick={() => {
+            handleLogout();
+          }}
+          disabled={status === 'checking'}
+        >
+          {status === 'checking' ? 'Checking...' : 'Logout'}
+        </Button>
+      )}
 
-      <h3>
-        <u>{status}</u>
-      </h3>
+      <Typography className="text-teal-500 underline" variant="h5">
+        {status}
+      </Typography>
       {user && <p>{JSON.stringify(user, null, 2)}</p>}
 
       {errorMessage && <p>{errorMessage}</p>}
