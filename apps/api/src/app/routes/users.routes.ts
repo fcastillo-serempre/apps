@@ -16,7 +16,12 @@ import {
   getUsers,
 } from '../controllers';
 import { emailExists, isValidRole, userExistsById } from '../helpers';
-import { checkJwt, fieldsValidator, hasUserRole } from '../middlewares';
+import {
+  checkJwt,
+  fieldsValidator,
+  hasUserRole,
+  isAdminRole,
+} from '../middlewares';
 
 const router = Router(); // Create a new router
 
@@ -42,6 +47,8 @@ router.get(
   '/:id',
   [
     // Middlewares
+    checkJwt,
+    isAdminRole,
     check('id', 'Id is not valid').isMongoId(),
     check('id').custom(userExistsById),
     fieldsValidator,
@@ -77,6 +84,6 @@ router.delete(
   deleteUser
 );
 
-router.get('/', getUsers);
+router.get('/', [checkJwt, isAdminRole], getUsers);
 
 export default router;
