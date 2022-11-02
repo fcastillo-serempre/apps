@@ -97,7 +97,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    // const user = await User.findByIdAndDelete(id); // Physical delete
+    /* const user = await User.findByIdAndDelete(id); // Physical delete */
     const user = await User.findByIdAndUpdate(id, { status: false }); // Logical delete
 
     return res.status(200).json(user);
