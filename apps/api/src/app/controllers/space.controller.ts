@@ -31,6 +31,7 @@ export const createSpace = async (
   res: Response
 ): Promise<Response> => {
   const space = new Space(req.body);
+
   const uid = getUid(res);
 
   try {
@@ -113,7 +114,7 @@ export const deleteSpace = async (
     // Delete space
     await Space.findByIdAndDelete(spaceId);
 
-    return res.send({ ok: true, space });
+    return res.send({ space });
   } catch (error) {
     return res.status(500).send(getErrorMessage(error));
   }

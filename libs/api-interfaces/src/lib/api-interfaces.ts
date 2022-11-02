@@ -9,14 +9,23 @@ export interface Token {
 // User model
 //
 
+export enum UserRole {
+  ADMIN = 'ADMIN_ROLE',
+  USER = 'USER_ROLE',
+}
+
+type Role = UserRole.ADMIN | UserRole.USER;
+
 export interface BaseUser {
   email: string;
   password: string;
+  role: Role;
+  status: boolean;
+  google: boolean;
 }
 export interface User extends BaseUser {
   name: string;
 }
-
 //
 // Space model
 //
