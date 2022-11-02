@@ -6,6 +6,8 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
+import { UserRole } from '@apps/api-interfaces';
+
 import {
   createUser,
   deleteUser,
@@ -14,7 +16,7 @@ import {
   getUsers,
 } from '../controllers';
 import { emailExists, isValidRole, userExistsById } from '../helpers';
-import { fieldsValidator } from '../middlewares';
+import { checkJwt, fieldsValidator, hasUserRole } from '../middlewares';
 
 const router = Router(); // Create a new router
 
@@ -51,12 +53,10 @@ router.get(
 router.put(
   '/:id',
   [
-    // Middlewares
+    checkJwt,
+    hasUserRole(UserRole.ADMIN, UserRole.USER),
     check('id', 'Id is not valid').isMongoId(),
     check('id').custom(userExistsById),
-    check('password', 'Password must be at least 6 characters').isLength({
-      min: 6,
-    }),
     check('role').custom(isValidRole),
     fieldsValidator,
   ],
@@ -67,6 +67,9 @@ router.put(
 router.delete(
   '/:id',
   [
+    checkJwt,
+    // isAdminRole,
+    hasUserRole(UserRole.ADMIN, UserRole.USER),
     check('id', 'Id is not valid').isMongoId(),
     check('id').custom(userExistsById),
     fieldsValidator,

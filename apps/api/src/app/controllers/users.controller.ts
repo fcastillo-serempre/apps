@@ -2,7 +2,7 @@ import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
 
 import { User } from '../models';
-import { getErrorMessage } from '../helpers';
+import { getErrorMessage, handleUserFromJwt } from '../helpers';
 
 export const createUser = async (
   req: Request,
@@ -51,6 +51,7 @@ export const getUser = async (
 
 export const editUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const authenticatedUser = handleUserFromJwt(res).get();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _id, password, google, email, ...rest } = req.body;
 
@@ -62,17 +63,18 @@ export const editUser = async (req: Request, res: Response) => {
 
   const user = await User.findByIdAndUpdate(id, rest);
 
-  return res.status(200).json(user);
+  return res.status(200).json({ user, authenticatedUser });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const authenticatedUser = handleUserFromJwt(res).get();
 
   try {
     /* const user = await User.findByIdAndDelete(id); // Physical delete */
     const user = await User.findByIdAndUpdate(id, { status: false }); // Logical delete
 
-    return res.status(200).json(user);
+    return res.status(200).json({ user, authenticatedUser });
   } catch (error) {
     return res.status(500).send(getErrorMessage(error));
   }

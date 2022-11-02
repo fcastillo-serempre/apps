@@ -1,8 +1,8 @@
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
 
+import { generateToken, getErrorMessage, handleUserFromJwt } from '../helpers';
 import { User } from '../models';
-import { generateToken, getErrorMessage } from '../helpers';
 
 export const register = async (
   req: Request,
@@ -30,7 +30,7 @@ export const register = async (
 
     // Generate JWT
     const token = await generateToken({
-      uid: user.id,
+      id: user.id,
       name,
     });
 
@@ -61,7 +61,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
     // Generate JWT
     const token = await generateToken({
-      uid: id,
+      id,
       name,
     });
 
@@ -75,12 +75,11 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export const revalidateToken = async (_, res: Response): Promise<Response> => {
-  // console.log(res.locals.jwtPayload);
-  const { id, name } = res.locals.jwtPayload;
+  const { id, name } = handleUserFromJwt(res).get();
 
   // Generate JWT
   const token = await generateToken({
-    uid: id,
+    id,
     name,
   });
 

@@ -6,9 +6,9 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { login, register, revalidateToken } from '../controllers';
-import { credentialsNotValid, emailExists, isValidRole } from '../helpers';
 import { checkJwt, fieldsValidator } from '../middlewares';
+import { credentialsNotValid, emailExists, isValidRole } from '../helpers';
+import { login, register, revalidateToken } from '../controllers';
 
 const router = Router(); // Create a new router
 

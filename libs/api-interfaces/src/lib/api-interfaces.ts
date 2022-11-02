@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 export interface Token {
-  uid: string;
+  id: Types.ObjectId;
   name: string;
 }
 
@@ -24,6 +24,7 @@ export interface BaseUser {
   google: boolean;
 }
 export interface User extends BaseUser {
+  id: Types.ObjectId;
   name: string;
 }
 //
