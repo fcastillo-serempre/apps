@@ -16,7 +16,7 @@ export const emailExists = async (email: string) => {
 };
 
 export const credentialsNotValid = async (email: string) => {
-  const emailExists = await User.findOne({ email });
+  const emailExists = await User.findOne({ email, status: true });
   if (!emailExists) {
     throw new Error(`User or password are incorrect`);
   }
