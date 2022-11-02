@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
-import helmet from 'helmet';
 
 import { getEnvVariables } from '@apps/helpers';
 
@@ -20,7 +19,7 @@ app.use(express.static(CLIENT_BUILD_PATH));
 
 // Call midlewares
 app.use(cors()); // Cors options
-app.use(helmet()); // Security
+
 app.use(express.json()); // Read and parse body
 
 app.use('/', routes); // Protected API endpoints
