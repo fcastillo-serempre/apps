@@ -6,12 +6,25 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { createUser, loginUser, revalidateToken } from '../controllers';
-import { credentialsNotValid, emailExists, isValidRole } from '../helpers';
+import {
+  createUser,
+  deleteUser,
+  editUser,
+  getUsers,
+  loginUser,
+  revalidateToken,
+} from '../controllers';
+import {
+  credentialsNotValid,
+  emailExists,
+  isValidRole,
+  userExistsById,
+} from '../helpers';
 import { checkJwt, fieldsValidator } from '../middlewares';
 
 const router = Router(); // Create a new router
 
+// Create user
 router.post(
   '/new',
   [
@@ -28,6 +41,7 @@ router.post(
   createUser
 );
 
+// Login user
 router.post(
   '/',
   [
@@ -37,12 +51,41 @@ router.post(
     check('password', 'Password must be at least 6 characters').isLength({
       min: 6,
     }),
-
     fieldsValidator,
   ],
   loginUser
 );
 
+// Edit user
+router.put(
+  '/:id',
+  [
+    // Middlewares
+    check('id', 'Id is not valid').isMongoId(),
+    check('id').custom(userExistsById),
+    check('password', 'Password must be at least 6 characters').isLength({
+      min: 6,
+    }),
+    check('role').custom(isValidRole),
+    fieldsValidator,
+  ],
+  editUser
+);
+
+// Delete user
+router.delete(
+  '/:id',
+  [
+    check('id', 'Id is not valid').isMongoId(),
+    check('id').custom(userExistsById),
+    fieldsValidator,
+  ],
+  deleteUser
+);
+
+router.get('/', getUsers);
+
+// Revalidate token
 router.get('/renew', checkJwt, revalidateToken);
 
 export default router;

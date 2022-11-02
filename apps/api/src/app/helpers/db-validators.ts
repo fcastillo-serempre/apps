@@ -22,12 +22,12 @@ export const credentialsNotValid = async (email: string) => {
   }
 };
 
-// export const userExistsById = async (id: string) => {
-//   const userExists = await User.findById(id);
-//   if (!userExists) {
-//     throw new Error(`User with id ${id} does not exist`);
-//   }
-// };
+export const userExistsById = async (id: string) => {
+  const userExists = await User.findById(id);
+  if (!userExists) {
+    throw new Error(`User with id ${id} does not exist`);
+  }
+};
 
 // export const passwordNotValid = async (email: string, password: string) => {
 //   const user = await User.findOne({ email });
