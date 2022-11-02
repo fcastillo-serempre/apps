@@ -17,10 +17,7 @@ export const login = createAsyncThunk<
   { state: RootState }
 >(`@auth/login`, async (user: PayloadLogin): Promise<UserEntity> => {
   try {
-    const { data } = await wikiApi('/auth', {
-      method: 'POST',
-      data: user,
-    });
+    const { data } = await wikiApi.post(`/auth/login`, user);
 
     const { user: userData, token } = data;
 

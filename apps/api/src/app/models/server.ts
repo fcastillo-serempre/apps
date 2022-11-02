@@ -1,55 +1,55 @@
-import * as path from 'path';
-import * as express from 'express';
+// import * as path from 'path';
+// import * as express from 'express';
 
-import cors = require('cors');
+// import cors = require('cors');
 
-import { getEnvVariables } from '@apps/helpers';
+// import { getEnvVariables } from '@apps/helpers';
 
-import auth from '../routes/auth.routes';
-import space from '../routes/space.routes';
+// import auth from '../routes/auth.routes';
+// import space from '../routes/spaces.routes';
 
-const { port, baseURL } = getEnvVariables();
+// const { port, baseURL } = getEnvVariables();
 
-class Server {
-  private app: express.Application;
-  private port: number;
-  private baseURL: string;
-  private publicPath: string;
+// class Server {
+//   private app: express.Application;
+//   private port: number;
+//   private baseURL: string;
+//   private publicPath: string;
 
-  constructor() {
-    this.port = port;
-    this.baseURL = baseURL;
-    this.publicPath = path.join(__dirname, '../wiki');
+//   constructor() {
+//     this.port = port;
+//     this.baseURL = baseURL;
+//     this.publicPath = path.join(__dirname, '../wiki');
 
-    this.app = express();
+//     this.app = express();
 
-    this.middlewares();
-    this.routes();
-  }
+//     this.middlewares();
+//     this.routes();
+//   }
 
-  private middlewares(): void {
-    this.app.use(express.static(this.publicPath)); // Public directory
-    this.app.use(express.json()); // Read and parse body
-    this.app.options('*', cors()); // Cors options
-  }
+//   private middlewares(): void {
+//     this.app.use(express.static(this.publicPath)); // Public directory
+//     this.app.use(express.json()); // Read and parse body
+//     this.app.options('*', cors()); // Cors options
+//   }
 
-  private routes(): void {
-    console.log(this);
-    this.app.use(`${this.baseURL}/auth`, auth);
-    this.app.use(`${this.baseURL}/spaces`, space);
+//   private routes(): void {
+//     console.log(this);
+//     this.app.use(`${this.baseURL}/auth`, auth);
+//     this.app.use(`${this.baseURL}/spaces`, space);
 
-    this.app.get('*', (_, response: express.Response) => {
-      response.sendFile(path.join(this.publicPath, 'index.html'));
-    });
-  }
+//     this.app.get('*', (_, response: express.Response) => {
+//       response.sendFile(path.join(this.publicPath, 'index.html'));
+//     });
+//   }
 
-  public listen() {
-    const server = this.app.listen(this.port, () => {
-      console.log('Listening at http://localhost:' + this.port + this.baseURL);
-    });
+//   public listen() {
+//     const server = this.app.listen(this.port, () => {
+//       console.log('Listening at http://localhost:' + this.port + this.baseURL);
+//     });
 
-    server.on('error', console.error);
-  }
-}
+//     server.on('error', console.error);
+//   }
+// }
 
-export default Server;
+// export default Server;

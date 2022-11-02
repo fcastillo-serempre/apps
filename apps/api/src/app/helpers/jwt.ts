@@ -10,7 +10,7 @@ export const generateToken = ({
   uid: id,
   name,
 }: Token): Promise<string | undefined> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject): void => {
     const payload = { id, name };
 
     jwt.sign(
