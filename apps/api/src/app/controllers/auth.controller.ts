@@ -8,20 +8,18 @@ export const createUser = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const { email, password } = req.body;
+  const { email, password, name, role } = req.body;
 
   try {
     let user = await User.findOne({ email });
 
-    // Check if user exists
-    if (user) {
-      return res.status(400).json({
-        message: 'A user already exists with that email',
-      });
-    }
-
     // Create user with model
-    user = new User(req.body);
+    user = new User({
+      email,
+      name,
+      password,
+      role,
+    }); // Ignores params not in schema
 
     // Encrypt password
     const salt = bcrypt.genSaltSync();
@@ -29,19 +27,16 @@ export const createUser = async (
 
     // Save user
     await user.save();
-    const { id: uid, name } = user;
 
     // Generate JWT
     const token = await generateToken({
-      uid,
+      uid: user.id,
       name,
     });
 
     return res.status(201).json({
-      uid,
-      name,
       token,
-      email,
+      user,
     });
   } catch (err) {
     return res.status(500).json(err);
@@ -57,12 +52,12 @@ export const loginUser = async (
   try {
     const user = await User.findOne({ email });
 
-    // Check if user exists
-    if (!user) {
-      return res.status(400).json({
-        message: 'User or password are incorrect',
-      });
-    }
+    // // Check if user exists
+    // if (!user) {
+    //   return res.status(400).json({
+    //     message: 'User or password are incorrect',
+    //   });
+    // }
 
     // Check password
     const validPassword = bcrypt.compareSync(password, user.password);
@@ -72,19 +67,17 @@ export const loginUser = async (
       });
     }
 
-    const { id: uid, name } = user;
+    const { id, name } = user;
 
     // Generate JWT
     const token = await generateToken({
-      uid,
+      uid: id,
       name,
     });
 
     return res.status(200).json({
+      user,
       token,
-      id: uid,
-      name,
-      email,
     });
   } catch (error) {
     return res.status(500).send(getErrorMessage(error));
@@ -93,13 +86,21 @@ export const loginUser = async (
 
 export const revalidateToken = async (_, res: Response): Promise<Response> => {
   // console.log(res.locals.jwtPayload);
-  const { uid, name } = res.locals.jwtPayload;
+  const { id, name } = res.locals.jwtPayload;
 
   // Generate JWT
   const token = await generateToken({
-    uid,
+    uid: id,
     name,
   });
 
-  return res.json({ id: uid, name, token });
+  const user = await User.findById(id);
+
+  if (!user) {
+    return res.status(400).json({
+      message: 'User not found',
+    });
+  }
+
+  return res.json({ token, user });
 };

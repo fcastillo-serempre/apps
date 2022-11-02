@@ -7,11 +7,11 @@ import { getEnvVariables } from '@apps/helpers';
 const { jwtSecret } = getEnvVariables();
 
 export const generateToken = ({
-  uid,
+  uid: id,
   name,
 }: Token): Promise<string | undefined> => {
   return new Promise((resolve, reject) => {
-    const payload = { uid, name };
+    const payload = { id, name };
 
     jwt.sign(
       payload,
