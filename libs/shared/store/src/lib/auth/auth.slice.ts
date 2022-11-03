@@ -8,7 +8,12 @@ import {
 import type { UserEntity } from '@apps/models';
 
 import type { AuthState } from './auth.types';
-import { checkToken, login, logout } from './auth.actions';
+import {
+  asyncCheckToken,
+  asyncLogin,
+  asyncLoginWithGoogle,
+  asyncLogout,
+} from './auth.actions';
 
 export const AUTH_FEATURE_KEY = '@auth';
 
@@ -31,52 +36,72 @@ export const authSlice = createSlice({
       state.status = 'checking';
       state.user = undefined;
     },
+    login: (state, action: PayloadAction<UserEntity>) => {
+      state.errorMessage = undefined;
+      state.status = 'authenticated';
+      state.user = action.payload;
+    },
+    logout: (state) => {
+      state.errorMessage = undefined;
+      state.status = 'not-authenticated';
+      state.user = undefined;
+    },
   },
   extraReducers: (builder) => {
     // Login
-    builder.addCase(login.pending, (state) => {
+    builder.addCase(asyncLogin.pending, (state) => {
       authSlice.caseReducers.checkingCredentials(state);
     });
     builder.addCase(
-      login.fulfilled,
+      asyncLogin.fulfilled,
       (state, action: PayloadAction<UserEntity>) => {
-        state.errorMessage = undefined;
-        state.status = 'authenticated';
-        state.user = action.payload;
+        authSlice.caseReducers.login(state, action);
       }
     );
-    builder.addCase(login.rejected, (state, { error }: ActionError) => {
+    builder.addCase(asyncLogin.rejected, (state, { error }: ActionError) => {
       state.errorMessage = error.message;
       state.status = 'not-authenticated';
       state.user = undefined;
     });
     // Logout
-    builder.addCase(logout.pending, (state) => {
+    builder.addCase(asyncLogout.pending, (state) => {
       authSlice.caseReducers.checkingCredentials(state);
     });
-    builder.addCase(logout.fulfilled, (state) => {
-      state.errorMessage = undefined;
-      state.status = 'not-authenticated';
-      state.user = undefined;
+    builder.addCase(asyncLogout.fulfilled, (state) => {
+      authSlice.caseReducers.logout(state);
     });
-    // Check token
-    builder.addCase(checkToken.pending, (state) => {
+    // Login with Google
+    builder.addCase(asyncLoginWithGoogle.pending, (state) => {
       authSlice.caseReducers.checkingCredentials(state);
     });
     builder.addCase(
-      checkToken.fulfilled,
+      asyncLoginWithGoogle.fulfilled,
+      (state, action: PayloadAction<UserEntity>) => {
+        authSlice.caseReducers.login(state, action);
+      }
+    );
+    // Check token
+    builder.addCase(asyncCheckToken.pending, (state) => {
+      authSlice.caseReducers.checkingCredentials(state);
+    });
+    builder.addCase(
+      asyncCheckToken.fulfilled,
       (state, action: PayloadAction<UserEntity>) => {
         state.errorMessage = undefined;
         state.status = 'authenticated';
         state.user = action.payload;
       }
     );
-    builder.addCase(checkToken.rejected, (state, { error }: ActionError) => {
-      state.errorMessage = error.message;
-      state.status = 'not-authenticated';
-      state.user = undefined;
-    });
+    builder.addCase(
+      asyncCheckToken.rejected,
+      (state, { error }: ActionError) => {
+        state.errorMessage = error.message;
+        state.status = 'not-authenticated';
+        state.user = undefined;
+      }
+    );
   },
 });
 
+export const { logout } = authSlice.actions;
 export const authReducer = authSlice.reducer;

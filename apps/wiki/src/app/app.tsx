@@ -3,44 +3,30 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import { store, persistor, useAuthStore } from '@apps/store';
-import { Button, Typography } from '@apps/ui-library';
+import { Avatar, Button, Typography } from '@apps/ui-library';
 
 import { AppNavigation } from '../router';
-
-export const Login = () => {
-  const { handleLogin, status, errorMessage } = useAuthStore();
-
-  return (
-    <>
-      <Typography variant="h3">Welcome to wiki!</Typography>
-      <Button
-        onClick={() => {
-          handleLogin({
-            password: '123456',
-            email: 'fcastillo@serempre.com',
-          });
-        }}
-        disabled={status === 'checking'}
-      >
-        {status === 'checking' ? 'Checking...' : 'Login'}
-      </Button>
-
-      <Typography className="text-teal-500 underline" variant="h5">
-        {status}
-      </Typography>
-
-      {errorMessage && <p>{errorMessage}</p>}
-    </>
-  );
-};
 
 export const Logout = () => {
   const { handleLogout, status, user, errorMessage } = useAuthStore();
   return (
     <>
-      <Typography variant="h3">Welcome {user?.name}!</Typography>
+      {user && (
+        <div className="flex items-center p-4 mb-4 border rounded-xl gap-x-3 border-slate-100">
+          <Avatar src={user.photoURL} alt={user.name} />
+          <div>
+            <Typography variant="h6" className="font-bold">
+              {user.name}
+            </Typography>
+            <Typography variant="body2" className="text-sm">
+              {user.email}
+            </Typography>
+          </div>
+        </div>
+      )}
+
       <Button
-        variant="outlined"
+        color="failure"
         onClick={() => {
           handleLogout();
         }}
@@ -48,10 +34,6 @@ export const Logout = () => {
       >
         {status === 'checking' ? 'Checking...' : 'Logout'}
       </Button>
-
-      <Typography className="text-teal-500 underline" variant="h5">
-        {status}
-      </Typography>
 
       {errorMessage && <p>{errorMessage}</p>}
     </>

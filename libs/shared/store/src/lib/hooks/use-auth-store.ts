@@ -1,6 +1,12 @@
 import { UserEntity } from '@apps/models';
 
-import { checkToken, login, logout, PayloadLogin } from '../auth/auth.actions';
+import {
+  asyncCheckToken,
+  asyncLogin,
+  asyncLoginWithGoogle,
+  asyncLogout,
+  PayloadLogin,
+} from '../auth/auth.actions';
 import {
   selectAuthStatus,
   selectAuthUser,
@@ -19,6 +25,7 @@ interface UseAuthStore {
   handleLogin: (user: PayloadLogin) => void;
   handleLogout: () => void;
   handleCheckToken: () => void;
+  handleLoginWithGoogle: (tokenId: string) => void;
 }
 
 export const useAuthStore = (): UseAuthStore => {
@@ -28,15 +35,19 @@ export const useAuthStore = (): UseAuthStore => {
   const errorMessage = useAppSelector(selectAuthErrorMessage);
 
   const handleLogin = (user: PayloadLogin) => {
-    dispatch(login(user));
+    dispatch(asyncLogin(user));
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(asyncLogout());
   };
 
   const handleCheckToken = () => {
-    dispatch(checkToken());
+    dispatch(asyncCheckToken());
+  };
+
+  const handleLoginWithGoogle = (tokenId: string) => {
+    dispatch(asyncLoginWithGoogle(tokenId));
   };
 
   return {
@@ -48,5 +59,6 @@ export const useAuthStore = (): UseAuthStore => {
     handleLogin,
     handleLogout,
     handleCheckToken,
+    handleLoginWithGoogle,
   };
 };

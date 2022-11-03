@@ -5,5 +5,5 @@ export interface UserEntity {
   id: userUid;
   name: string;
   email: string;
-  photoURL?: string | null;
+  photoURL?: string;
 }

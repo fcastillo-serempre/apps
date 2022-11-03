@@ -1,7 +1,12 @@
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
 
-import { generateToken, getErrorMessage, handleUserFromJwt } from '../helpers';
+import {
+  generateToken,
+  getErrorMessage,
+  handleUserFromJwt,
+  verifyGoogle,
+} from '../helpers';
 import { User } from '../models';
 
 export const register = async (
@@ -69,6 +74,47 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       user,
       token,
     });
+  } catch (error) {
+    return res.status(500).send(getErrorMessage(error));
+  }
+};
+
+export const googleSignIn = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const tokenId = <string>req.body.tokenId;
+
+  try {
+    const { email, name, picture } = await verifyGoogle(tokenId);
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create user
+      user = new User({
+        name,
+        email,
+        password: ':P',
+        photoURL: picture,
+        google: true,
+      });
+
+      await user.save();
+    }
+
+    if (!user.status) {
+      return res.status(401).json({
+        message: 'User is not active',
+      });
+    }
+
+    const token = await generateToken({
+      id: user.id,
+      name,
+    });
+
+    return res.status(200).json({ token, user });
   } catch (error) {
     return res.status(500).send(getErrorMessage(error));
   }

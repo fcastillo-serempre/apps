@@ -26,6 +26,7 @@ export interface BaseUser {
 export interface User extends BaseUser {
   id: Types.ObjectId;
   name: string;
+  photoURL?: string;
 }
 //
 // Space model
