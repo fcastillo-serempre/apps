@@ -1,6 +1,5 @@
 import { FC, useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
-// import 'https://accounts.google.com/gsi/client';
 
 import { useAuthStore } from '@apps/store';
 
@@ -15,8 +14,6 @@ export const AppRouter: FC = () => {
   useEffect(() => {
     handleCheckToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
-    console.log(window);
   }, []);
 
   useEffect(() => {

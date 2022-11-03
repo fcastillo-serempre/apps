@@ -42,3 +42,12 @@ export interface Space {
   published: boolean;
   user: Types.ObjectId;
 }
+
+//
+// Category model
+//
+export interface Category {
+  name: string;
+  status: boolean;
+  user: Types.ObjectId;
+}
