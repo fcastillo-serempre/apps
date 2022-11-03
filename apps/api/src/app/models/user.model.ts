@@ -29,6 +29,9 @@ const userSchema = new Schema<UserType>({
     type: Boolean,
     default: false,
   },
+  photoURL: {
+    type: String,
+  },
 });
 
 userSchema.method('toJSON', function () {

@@ -1,10 +1,15 @@
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
 
+import {
+  generateToken,
+  getErrorMessage,
+  handleUserFromJwt,
+  verifyGoogle,
+} from '../helpers';
 import { User } from '../models';
-import { generateToken, getErrorMessage } from '../helpers';
 
-export const createUser = async (
+export const register = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -30,7 +35,7 @@ export const createUser = async (
 
     // Generate JWT
     const token = await generateToken({
-      uid: user.id,
+      id: user.id,
       name,
     });
 
@@ -43,14 +48,18 @@ export const createUser = async (
   }
 };
 
-export const loginUser = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+export const login = async (req: Request, res: Response): Promise<Response> => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
+
+    // console.log(user.google);
+    // if (user.google) {
+    //   return res.status(400).json({
+    //     message: 'Use your Google account to login',
+    //   });
+    // }
 
     // Check password
     const validPassword = bcrypt.compareSync(password, user.password);
@@ -62,9 +71,8 @@ export const loginUser = async (
 
     const { id, name } = user;
 
-    // Generate JWT
     const token = await generateToken({
-      uid: id,
+      id,
       name,
     });
 
@@ -77,70 +85,53 @@ export const loginUser = async (
   }
 };
 
-export const editUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { _id, password, google, email, ...rest } = req.body;
-
-  if (password) {
-    // Encrypt password
-    const salt = bcrypt.genSaltSync();
-    rest.password = bcrypt.hashSync(password, salt);
-  }
-
-  const user = await User.findByIdAndUpdate(id, rest);
-
-  return res.status(200).json(user);
-};
-
-export const deleteUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const googleSignIn = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const tokenId = <string>req.body.tokenId;
 
   try {
-    /* const user = await User.findByIdAndDelete(id); // Physical delete */
-    const user = await User.findByIdAndUpdate(id, { status: false }); // Logical delete
+    const { email, name, picture } = await verifyGoogle(tokenId);
 
-    return res.status(200).json(user);
-  } catch (error) {
-    return res.status(500).send(getErrorMessage(error));
-  }
-};
+    let user = await User.findOne({ email });
 
-export const getUsers = async (req: Request, res: Response) => {
-  const limit = <number>Number(req.query.limit) || 10;
-  const page = <number>Number(req.query.page) || 0;
-  const query = { status: true };
+    if (!user) {
+      // Create user
+      user = new User({
+        name,
+        email,
+        password: ':P',
+        photoURL: picture,
+        google: true,
+      });
 
-  try {
-    const [total, users] = await Promise.all([
-      User.countDocuments(query), // Total documents
-      User.find(query)
-        .limit(limit)
-        .skip(limit * page), // Documents to show
-    ]);
+      await user.save();
+    }
 
-    if (users.length === 0) {
-      return res.status(400).json({
-        message: 'No users found',
+    if (!user.status) {
+      return res.status(401).json({
+        message: 'User is not active',
       });
     }
 
-    return res.status(200).json({
-      total,
-      users,
+    const token = await generateToken({
+      id: user.id,
+      name,
     });
+
+    return res.status(200).json({ token, user });
   } catch (error) {
     return res.status(500).send(getErrorMessage(error));
   }
 };
 
 export const revalidateToken = async (_, res: Response): Promise<Response> => {
-  // console.log(res.locals.jwtPayload);
-  const { id, name } = res.locals.jwtPayload;
+  const { id, name } = handleUserFromJwt(res).get();
 
   // Generate JWT
   const token = await generateToken({
-    uid: id,
+    id,
     name,
   });
 

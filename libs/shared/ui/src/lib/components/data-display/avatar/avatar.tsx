@@ -15,6 +15,7 @@ export const Avatar: FC<AvatarProps> = ({
   size = 'md',
   alt,
   src,
+  ...rest
 }) => {
   const { avatar } = useThemeStore();
 
@@ -30,6 +31,7 @@ export const Avatar: FC<AvatarProps> = ({
             bordered && avatar.bordered,
             rounded && avatar.rounded
           )}
+          {...rest}
         />
       ) : (
         <div
