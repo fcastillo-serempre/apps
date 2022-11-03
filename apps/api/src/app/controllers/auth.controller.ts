@@ -54,6 +54,13 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   try {
     const user = await User.findOne({ email });
 
+    // console.log(user.google);
+    // if (user.google) {
+    //   return res.status(400).json({
+    //     message: 'Use your Google account to login',
+    //   });
+    // }
+
     // Check password
     const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) {
@@ -64,7 +71,6 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
     const { id, name } = user;
 
-    // Generate JWT
     const token = await generateToken({
       id,
       name,

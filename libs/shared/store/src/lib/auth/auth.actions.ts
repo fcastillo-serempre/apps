@@ -12,6 +12,11 @@ export interface PayloadLogin extends Pick<UserEntity, 'email'> {
   password: string;
 }
 
+const normalizeUser = (user: UserEntity): UserEntity => {
+  const { id, name, email, photoURL } = user;
+  return { id, name, email, photoURL };
+};
+
 export const asyncLogin = createAsyncThunk<
   UserEntity, // Return type of the payload creator
   PayloadLogin, // First argument to the payload creator
@@ -22,18 +27,10 @@ export const asyncLogin = createAsyncThunk<
 
     const { user: userData, token } = data;
 
-    const { id, name, email } = userData;
-
     // Save token in localStorage
     handleToken().set(token);
 
-    const userEntity: UserEntity = {
-      id,
-      name,
-      email,
-    };
-
-    return userEntity;
+    return normalizeUser(userData);
   } catch (error) {
     if (error instanceof AxiosError || error instanceof Error || error) {
       return Promise.reject(error);
@@ -71,19 +68,10 @@ export const asyncCheckToken = createAsyncThunk<
       data: { token, user },
     } = await wikiApi.get('/auth/renew');
 
-    const { id, name, email, photoURL } = user;
-
     // Save token in localStorage
     setToken(token);
 
-    const userEntity: UserEntity = {
-      id,
-      name,
-      email,
-      photoURL,
-    };
-
-    return userEntity;
+    return normalizeUser(user);
   } catch (error) {
     if (error instanceof AxiosError || error instanceof Error || error) {
       return Promise.reject(error);
@@ -104,19 +92,10 @@ export const asyncLoginWithGoogle = createAsyncThunk<
       tokenId,
     });
 
-    const { id, name, email, photoURL } = <UserEntity>user;
-
     // Save token in localStorage
     handleToken().set(token);
 
-    const userEntity: UserEntity = {
-      id,
-      name,
-      email,
-      photoURL,
-    };
-
-    return userEntity;
+    return normalizeUser(user);
   } catch (error) {
     if (error instanceof AxiosError || error instanceof Error || error) {
       return Promise.reject(error);

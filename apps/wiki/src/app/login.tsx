@@ -12,7 +12,7 @@ export const Login = () => {
         onClick={() => {
           handleLogin({
             password: '123456',
-            email: 'fcastillo+1@serempre.com',
+            email: 'fcastillo@serempre.com',
           });
         }}
         disabled={status === 'checking'}

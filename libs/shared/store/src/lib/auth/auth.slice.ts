@@ -86,10 +86,10 @@ export const authSlice = createSlice({
     });
     builder.addCase(
       asyncCheckToken.fulfilled,
-      (state, action: PayloadAction<UserEntity>) => {
+      (state, { payload: user }: PayloadAction<UserEntity>) => {
         state.errorMessage = undefined;
         state.status = 'authenticated';
-        state.user = action.payload;
+        state.user = user;
       }
     );
     builder.addCase(

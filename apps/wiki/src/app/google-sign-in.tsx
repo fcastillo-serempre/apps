@@ -9,7 +9,9 @@ import { useAuthStore } from '@apps/store';
 
 const useGoogleSignIn = () => {
   const { googleClientId } = getEnvVariables();
-  const { handleLoginWithGoogle, handleLogout, user } = useAuthStore();
+  const { handleLoginWithGoogle, handleLogout, user, status } = useAuthStore();
+
+  const isAuthenticating = status === 'checking';
 
   const onResponse = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline
@@ -20,6 +22,7 @@ const useGoogleSignIn = () => {
   return {
     user,
     googleClientId,
+    isAuthenticating,
     // Actions
     handleLogout,
     // Callbacks
@@ -28,7 +31,7 @@ const useGoogleSignIn = () => {
 };
 
 export const GoogleSignIn = () => {
-  const { onResponse, googleClientId } = useGoogleSignIn();
+  const { onResponse, googleClientId, isAuthenticating } = useGoogleSignIn();
 
   return (
     <div className="flex flex-col">
@@ -41,6 +44,8 @@ export const GoogleSignIn = () => {
       >
         Sign in with Google
       </GoogleLogin>
+
+      {isAuthenticating && <p>Checking...</p>}
     </div>
   );
 };

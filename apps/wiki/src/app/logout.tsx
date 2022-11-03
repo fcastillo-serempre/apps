@@ -7,7 +7,11 @@ export const Logout = () => {
     <>
       {user && (
         <div className="flex items-center p-4 mb-4 border rounded-xl gap-x-3 border-slate-100">
-          <Avatar src={user.photoURL} alt={user.name} />
+          <Avatar
+            src={user.photoURL}
+            alt={user.name}
+            referrerPolicy="no-referrer"
+          />
           <div>
             <Typography variant="h6" className="font-bold">
               {user.name}

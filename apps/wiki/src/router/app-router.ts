@@ -1,11 +1,12 @@
 import { FC, useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
+// import 'https://accounts.google.com/gsi/client';
 
 import { useAuthStore } from '@apps/store';
 
 import { routes as globalRoutes } from './root.routes';
 import { getEnvVariables } from '@apps/helpers';
-import { gapi } from 'gapi-script';
+import { gapi, loadAuth2 } from 'gapi-script';
 
 export const AppRouter: FC = () => {
   const { status, handleCheckToken } = useAuthStore();
@@ -14,16 +15,16 @@ export const AppRouter: FC = () => {
   useEffect(() => {
     handleCheckToken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    console.log(window);
   }, []);
 
   useEffect(() => {
-    const initClient = () => {
-      gapi.client.init({
-        clientId: googleClientId,
-        scope: 'profile email',
-      });
+    const setAuth2 = async () => {
+      await loadAuth2(gapi, googleClientId, 'profile email');
     };
-    gapi.load('client:auth2', initClient);
+
+    setAuth2();
   }, [googleClientId]);
 
   const routes = useRoutes(globalRoutes(status));

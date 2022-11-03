@@ -61,7 +61,9 @@ export const editUser = async (req: Request, res: Response) => {
     rest.password = bcrypt.hashSync(password, salt);
   }
 
-  const user = await User.findByIdAndUpdate(id, rest);
+  const user = await User.findByIdAndUpdate(id, rest, {
+    new: true,
+  });
 
   return res.status(200).json({ user, authenticatedUser });
 };
