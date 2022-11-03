@@ -1,13 +1,13 @@
 import { Response, Request } from 'express';
 
-import { getErrorMessage, getUid } from '../helpers';
+import { getErrorMessage, getIdFromJwt } from '../helpers';
 import { Space } from '../models';
 
 export const getSpaces = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  const uid = getUid(res);
+  const uid = getIdFromJwt(res);
 
   const limit = <number>Number(req.query.limit) || 10;
   const page = <number>Number(req.query.page) || 0;
@@ -32,7 +32,7 @@ export const createSpace = async (
 ): Promise<Response> => {
   const space = new Space(req.body);
 
-  const uid = getUid(res);
+  const uid = getIdFromJwt(res);
 
   try {
     space.user = uid;
@@ -52,7 +52,7 @@ export const updateSpace = async (
   res: Response
 ): Promise<Response> => {
   const spaceId = req.params.id;
-  const uid = getUid(res);
+  const uid = getIdFromJwt(res);
 
   try {
     const space = await Space.findById(spaceId);
@@ -92,7 +92,7 @@ export const deleteSpace = async (
   res: Response
 ): Promise<Response> => {
   const spaceId = req.params.id;
-  const uid = getUid(res);
+  const uid = getIdFromJwt(res);
 
   try {
     const space = await Space.findById(spaceId);

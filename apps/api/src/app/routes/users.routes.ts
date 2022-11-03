@@ -29,7 +29,6 @@ const router = Router(); // Create a new router
 router.post(
   '/create',
   [
-    // Middlewares
     check('name', 'Name is required').not().isEmpty(),
     check('email', 'Email is required').isEmail(),
     check('email').custom(emailExists),
@@ -42,13 +41,13 @@ router.post(
   createUser
 );
 
-// get User
+// Get User
 router.get(
   '/:id',
   [
-    // Middlewares
     checkJwt,
-    isAdminRole,
+    hasUserRole(UserRole.ADMIN, UserRole.USER),
+
     check('id', 'Id is not valid').isMongoId(),
     check('id').custom(userExistsById),
     fieldsValidator,
@@ -62,9 +61,16 @@ router.put(
   [
     checkJwt,
     hasUserRole(UserRole.ADMIN, UserRole.USER),
+
     check('id', 'Id is not valid').isMongoId(),
     check('id').custom(userExistsById),
-    check('role').custom(isValidRole),
+    check('email', 'Email is required').isEmail().optional(),
+    check('password', 'Password must be at least 6 characters')
+      .isLength({
+        min: 6,
+      })
+      .optional(),
+    check('role').custom(isValidRole).optional(),
     fieldsValidator,
   ],
   editUser
@@ -75,8 +81,8 @@ router.delete(
   '/:id',
   [
     checkJwt,
-    // isAdminRole,
     hasUserRole(UserRole.ADMIN, UserRole.USER),
+
     check('id', 'Id is not valid').isMongoId(),
     check('id').custom(userExistsById),
     fieldsValidator,
