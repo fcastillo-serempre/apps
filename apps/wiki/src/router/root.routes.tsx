@@ -3,9 +3,10 @@ import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AuthStatus } from '@apps/store';
 
 import { AppRoutesEnum } from './app-routes.enum';
-import { Logout } from '../app/app';
+
 import { Login } from '../app/login';
 import { GoogleSignIn } from '../app/google-sign-in';
+import { Logout } from '../app/logout';
 
 export const routes: (status: AuthStatus) => RouteObject[] = (status) => {
   const isAuthenticated = status === 'authenticated';

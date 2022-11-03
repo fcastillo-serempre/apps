@@ -7,7 +7,6 @@ import { wikiApi } from '@apps/services';
 import { handleToken } from '@apps/helpers';
 
 import { RootState } from '../root/root.reducer';
-import { AUTH_FEATURE_KEY } from './auth.slice';
 
 export interface PayloadLogin extends Pick<UserEntity, 'email'> {
   password: string;
